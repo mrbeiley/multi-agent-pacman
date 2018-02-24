@@ -1,0 +1,2 @@
+Alex Stoken astoken@email.arizona.edu Most work done side by side, took lead on searchAgents to define states and heuristics
+Michael Beiley mrbeiley@email.arizona.edu Most work done side by side, took lead on search.py implementing the different algorithms
