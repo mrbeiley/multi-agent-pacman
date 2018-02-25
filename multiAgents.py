@@ -128,28 +128,26 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
   def min_value(self, gameState):
 
-    if gameState.isWin() or gameState.isLose(): 
+    if gameState.isWin() or gameState.isLose():
       return scoreEvaluationFunction(gameState)
-    
+
     v = 1000000000000000000000000
     for action in gameState.getLegalActions(gameState):
-      v = min(v, max_value(gameState.generateSuccessor(gameState,action))
+      v = min(v, max_value(gameState.generateSuccessor(gameState,action)))
 
 
     return v
 
 
   def max_value(self, gameState, agent):
-      if gameState.isWin() or gameState.isLose(): return util_val
+      if gameState.isWin() or gameState.isLose(): return self.evaluationFunction(gameState)
 
-      util_val = -1000000000000000
+      util_val = -1000000000000000000000
       for a in gameState.getLegalActions(agent):
-          util_val = max(util_val, min_value(gameState.generateSuccessor(agent, a))
+          util_val = max(util_val, min_value(gameState.generateSuccessor(agent, a)))
 
+      return util_val
 
-
-
-    return action
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
@@ -206,4 +204,3 @@ class ContestAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
-
