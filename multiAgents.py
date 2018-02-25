@@ -9,7 +9,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
-import math
+
 from game import Agent
 
 class ReflexAgent(Agent):
@@ -67,19 +67,8 @@ class ReflexAgent(Agent):
     newGhostStates = successorGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-    gost_pos = [ghostState.getPosition() for ghostState in newGhostStates]
-    food_dist = []
-
-    for i in oldFood.asList():
-        food_dist.append(manhattanDistance(newPos, i))
-        min_food = min(food_dist)
-
-    if oldFood[newPos[0]][newPos[1]] == True: x = 20
-    else: x= 0
-
-    min_ghost_dist = min([manhattanDistance(gost_pos[x], newPos) for x in xrange(len(gost_pos))])
-    #print(manhattanDistance(gost_pos[0], newPos))
-    return   x - math.exp(-(min_ghost_dist-5)) - 1.5*min_food
+    "*** YOUR CODE HERE ***"
+    return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
   """
@@ -136,8 +125,18 @@ class MinimaxAgent(MultiAgentSearchAgent):
       gameState.getNumAgents():
         Returns the total number of agents in the game
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+  def min_value(self, gameState):
+
+    if gameState.isWin() or gameState.isLose(): 
+      return scoreEvaluationFunction(gameState)
+    
+    v = 1000000000000000000000000
+    for action in gameState.getLegalActions(gameState):
+      v = min(v, max_value(gameState.generateSuccessor(gameState,action))
+
+
+    return v
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
@@ -194,3 +193,4 @@ class ContestAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
