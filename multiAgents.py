@@ -9,7 +9,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
-
+import math
 from game import Agent
 
 class ReflexAgent(Agent):
@@ -67,8 +67,19 @@ class ReflexAgent(Agent):
     newGhostStates = successorGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-    "*** YOUR CODE HERE ***"
-    return successorGameState.getScore()
+    gost_pos = [ghostState.getPosition() for ghostState in newGhostStates]
+    food_dist = []
+
+    for i in oldFood.asList():
+        food_dist.append(manhattanDistance(newPos, i))
+        min_food = min(food_dist)
+
+    if oldFood[newPos[0]][newPos[1]] == True: x = 20
+    else: x= 0
+
+    min_ghost_dist = min([manhattanDistance(gost_pos[x], newPos) for x in xrange(len(gost_pos))])
+    #print(manhattanDistance(gost_pos[0], newPos))
+    return   x - math.exp(-(min_ghost_dist-5)) - 1.5*min_food
 
 def scoreEvaluationFunction(currentGameState):
   """
@@ -183,4 +194,3 @@ class ContestAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
-
