@@ -126,14 +126,14 @@ class MinimaxAgent(MultiAgentSearchAgent):
       gameState.getNumAgents():
         Returns the total number of agents in the game
     """
-  def min_value(self, gameState):
+  def min_value(self, gameState, agent):
 
     if gameState.isWin() or gameState.isLose(): 
-      return scoreEvaluationFunction(gameState)
+      return self.evaluationFunction(gameState)
     
     v = 1000000000000000000000000
     for action in gameState.getLegalActions(gameState):
-      v = min(v, max_value(gameState.generateSuccessor(gameState,action))
+      v = min(v, max_value(gameState.generateSuccessor(agent,action))
 
 
     return v
