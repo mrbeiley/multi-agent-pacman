@@ -126,34 +126,39 @@ class MinimaxAgent(MultiAgentSearchAgent):
       gameState.getNumAgents():
         Returns the total number of agents in the game
     """
+    actions_list = []
     for a in gameState.getLegalActions(0):
-        max_action_val = 0
-        action_val, ply = self.min_value(gameState.generateSuccessor(0, a), 0)
-        if action_val > max_action_val:
-            action = a
 
-    return action
+        action_val, ply = self.min_value(gameState.generateSuccessor(0, a), 0, 1)
+        actions_list.append((action_val, a))
+        take_action = max(actions_list)
+    #print(gameState.getNumAgents())
+    #print(take_action[0])
+    return take_action[1]
 
-  def min_value(self, gameState, ply, agent=1):
-      if gameState.isWin() or gameState.isLose() or ply == self.depth*2:
+  def min_value(self, gameState, ply, agent):
+      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1:
           return (self.evaluationFunction(gameState), ply)
 
       v = 1000000000000000000000000
       for action in gameState.getLegalActions(agent):
-          v = min(v, self.max_value(gameState.generateSuccessor(agent,action), ply +1)[0])
+          if agent < gameState.getNumAgents()-1:
+              test_action, new_ply = self.min_value(gameState.generateSuccessor(agent,action), ply +1, agent+1)
+              v = min(v, test_action)
+          else:
+              test_action, new_ply = self.max_value(gameState.generateSuccessor(agent,action), ply +1, 0)
+              v = min(v, test_action)
 
+      return (v, new_ply)
 
-      return (v, ply)
-
-
-  def max_value(self, gameState, ply, agent=0):
-      if gameState.isWin() or gameState.isLose() or ply == self.depth*2: return self.evaluationFunction(gameState), ply
+  def max_value(self, gameState, ply, agent):
+      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return self.evaluationFunction(gameState), ply
       util_val = -1000000000000000000000
       for a in gameState.getLegalActions(agent):
-          util_val = max(util_val, self.min_value(gameState.generateSuccessor(agent, a), ply +1 )[0])
+          test_action, new_ply = self.min_value(gameState.generateSuccessor(agent, a), ply +1, agent +1 )
+          util_val = max(util_val, test_action)
 
-
-      return (util_val, ply)
+      return (util_val, new_ply)
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -165,8 +170,40 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Returns the minimax action using self.depth and self.evaluationFunction
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions_list = []
+    for a in gameState.getLegalActions(0):
+
+        action_val, ply = self.min_value_ab(gameState.generateSuccessor(0, a), 0, 1)
+        actions_list.append((action_val, a))
+        take_action = max(actions_list)
+    #print(gameState.getNumAgents())
+    #print(take_action[0])
+    return take_action[1]
+
+  def min_value_ab(self, gameState, ply, agent, alpha, beta):
+      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1:
+          return (self.evaluationFunction(gameState), ply)
+
+      v = 1000000000000000000000000
+      for action in gameState.getLegalActions(agent):
+          if agent < gameState.getNumAgents()-1:
+              test_action, new_ply = self.min_value_ab(gameState.generateSuccessor(agent,action), ply +1, agent+1, alpha, beta)
+              v = min(v, test_action)
+          else:
+              test_action, new_ply = self.max_value_ab(gameState.generateSuccessor(agent,action), ply +1, 0, alpha, beta)
+              v = min(v, test_action)
+
+      return (v, new_ply)
+
+  def max_value_ab(self, gameState, ply, agent, alpha, beta):
+      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return self.evaluationFunction(gameState), ply
+      util_val = -1000000000000000000000
+      for a in gameState.getLegalActions(agent):
+          test_action, new_ply = self.min_value_ab(gameState.generateSuccessor(agent, a), ply +1, agent +1 , alpha, beta)
+          util_val = max(util_val, test_action)
+
+      return (util_val, new_ply)
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
   """
