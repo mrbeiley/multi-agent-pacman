@@ -128,35 +128,32 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     for a in gameState.getLegalActions(0):
         max_action_val = 0
-        action_val = self.min_value(gameState.generateSuccessor(0, a), 0)
+        action_val, ply = self.min_value(gameState.generateSuccessor(0, a), 0)
         if action_val > max_action_val:
-            action =a
+            action = a
 
     return action
 
   def min_value(self, gameState, ply, agent=1):
-      ply = ply +1
       if gameState.isWin() or gameState.isLose() or ply == self.depth*2:
-          return self.evaluationFunction(gameState), ply
+          return (self.evaluationFunction(gameState), ply)
 
       v = 1000000000000000000000000
       for action in gameState.getLegalActions(agent):
-          v = min(v, self.max_value(gameState.generateSuccessor(agent,action), ply))
+          v = min(v, self.max_value(gameState.generateSuccessor(agent,action), ply +1)[0])
 
-      print (ply)
-      return v, ply
+
+      return (v, ply)
 
 
   def max_value(self, gameState, ply, agent=0):
-      ply = ply +1
       if gameState.isWin() or gameState.isLose() or ply == self.depth*2: return self.evaluationFunction(gameState), ply
-
       util_val = -1000000000000000000000
       for a in gameState.getLegalActions(agent):
-          util_val = max(util_val, self.min_value(gameState.generateSuccessor(agent, a), ply ))
+          util_val = max(util_val, self.min_value(gameState.generateSuccessor(agent, a), ply +1 )[0])
 
-      print (ply)
-      return util_val, ply
+
+      return (util_val, ply)
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
