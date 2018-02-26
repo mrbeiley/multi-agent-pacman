@@ -173,36 +173,44 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     actions_list = []
     for a in gameState.getLegalActions(0):
 
-        action_val, ply = self.min_value_ab(gameState.generateSuccessor(0, a), 0, 1)
+        action_val, ply, alpha, beta = self.min_value_ab(gameState.generateSuccessor(0, a), 0, 1, -100000000,10000000000)
         actions_list.append((action_val, a))
         take_action = max(actions_list)
     #print(gameState.getNumAgents())
     #print(take_action[0])
+
+    print(take_action[1])
     return take_action[1]
 
   def min_value_ab(self, gameState, ply, agent, alpha, beta):
       if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1:
-          return (self.evaluationFunction(gameState), ply)
+          return (self.evaluationFunction(gameState), ply, alpha, beta)
 
+      new_alpha = alpha
+      new_beta = beta
       v = 1000000000000000000000000
       for action in gameState.getLegalActions(agent):
           if agent < gameState.getNumAgents()-1:
-              test_action, new_ply = self.min_value_ab(gameState.generateSuccessor(agent,action), ply +1, agent+1, alpha, beta)
+              test_action, new_ply, new_alpha, new_beta = self.min_value_ab(gameState.generateSuccessor(agent,action), ply +1, agent+1, alpha, beta)
               v = min(v, test_action)
           else:
-              test_action, new_ply = self.max_value_ab(gameState.generateSuccessor(agent,action), ply +1, 0, alpha, beta)
+              test_action, new_ply, new_alpha, new_beta = self.max_value_ab(gameState.generateSuccessor(agent,action), ply +1, 0, alpha, beta)
               v = min(v, test_action)
-
-      return (v, new_ply)
+          if v <= new_alpha: return v, new_ply, new_alpha, new_beta
+          beta = min(beta, v)
+      return (v, new_ply, new_alpha, new_beta)
 
   def max_value_ab(self, gameState, ply, agent, alpha, beta):
-      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return self.evaluationFunction(gameState), ply
+      if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return (self.evaluationFunction(gameState), ply, alpha, beta)
       util_val = -1000000000000000000000
+      new_alpha = alpha
+      new_beta = beta
       for a in gameState.getLegalActions(agent):
-          test_action, new_ply = self.min_value_ab(gameState.generateSuccessor(agent, a), ply +1, agent +1 , alpha, beta)
+          test_action, new_ply, new_alpha, new_beta = self.min_value_ab(gameState.generateSuccessor(agent, a), ply +1, agent +1 , alpha, beta)
           util_val = max(util_val, test_action)
-
-      return (util_val, new_ply)
+          if util_val >= new_beta: return (util_val, new_ply, new_alpha, new_beta)
+          alpha = max(alpha, util_val)
+      return (util_val, new_ply, new_alpha, new_beta)
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
