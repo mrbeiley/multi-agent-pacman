@@ -281,11 +281,13 @@ def betterEvaluationFunction(currentGameState):
   """
 
   pos = currentGameState.getPacmanPosition()
-  oldFood = currentGameState.getFood()
-  newGhostStates = currentGameState.getGhostStates()
+  food = currentGameState.getFood()
+  ghostStates = currentGameState.getGhostStates()
   newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+  num_ghosts = currentGameState.getNumAgents()
+  capsule_pos = currentGameState.getCapsules()
 
-  ghost_pos = [ghostState.getPosition() for ghostState in newGhostStates]
+  ghost_pos = [ghostState.getPosition() for ghostState in ghostStates]
   food_dist = []
 
   for i in oldFood.asList():
@@ -293,13 +295,10 @@ def betterEvaluationFunction(currentGameState):
       min_food = min(food_dist)
 
 
-  return_val = 0
-  min_ghost_dist = min([manhattanDistance(ghost_pos[x], pos) for x in xrange(len(ghost_pos))])
-  if min_ghost_dist  < 3 : return_val += -400
 
-  if min_food < min_ghost_dist: return_val += 100
-  if oldFood[pos+1][pos] ==True or oldFood[pos-1][pos] ==True or oldFood[pos-1][pos]==True  or oldFood[pos][pos-1] ==True: return_val +=300
-  return  return_val
+  min_ghost_dist = min([manhattanDistance(ghost_pos[x], pos) for x in xrange(len(ghost_pos))])
+
+  return
 
 
 # Abbreviation
