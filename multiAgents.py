@@ -318,12 +318,37 @@ def betterEvaluationFunction(currentGameState):
   min_ghost_dist = min([manhattanDistance(ghost_pos[x], pos) for x in xrange(len(ghost_pos))])
   min_scare_time = min(newScaredTimes)
   #print food_proximity
- # print "Min scare time " + str(min_scare_time)
- # print "min_ghost_dist exp " + str(-math.exp(-(min_ghost_dist-5)))
-  print food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
-  return   food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
+  # print "Min scare time " + str(min_scare_time)
+  # print "min_ghost_dist exp " + str(-math.exp(-(min_ghost_dist-5)))
+  return_val = 0
+  c_dist = []
+  for c_pos in capsule_pos:
+      c_dist.append(manhattanDistance(pos, c_pos))
 
 
+  if min(c_dist)<5: return_val += 1./ min(c_dist)
+  if min_ghost_dist <= 1:
+      return_val -= 20
+      print "on"
+
+  return_val += 10*(1./len(food_list))
+  return_val += 1./min_food
+  #return_val += currentGameState.getScore()
+  #better state has higher eval function
+  #print food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
+
+  #print return_val
+  return return_val
+
+"""
+things that are important:
+-want less food on the board
+-want to be closer to food
+-want to be closer to capsules
+-want to be far from ghosts
+
+1/
+"""
 
 # Abbreviation
 better = betterEvaluationFunction
