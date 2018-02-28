@@ -292,6 +292,7 @@ def betterEvaluationFunction(currentGameState):
   food_list = food.asList()
   food_dist = []
   food_proximity = 0
+  capsule_proximity = 0
 
   for i in food_list:
       food_dist.append(manhattanDistance(pos, i))
@@ -301,12 +302,17 @@ def betterEvaluationFunction(currentGameState):
   actions = currentGameState.getLegalActions(0)
   if Directions.NORTH in actions:
       if food[pos[0]][pos[1]+ 1]: food_proximity += 10
+      if (pos[0], pos[1]+ 1) in capsule_pos: capsule_proximity += 10
   if Directions.SOUTH in actions:
       if food[pos[0]][pos[1]- 1]: food_proximity += 10
+      if (pos[0], pos[1]- 1) in capsule_pos: capsule_proximity += 10
   if Directions.EAST in actions:
       if food[pos[0]+ 1][pos[1]]: food_proximity += 10
+      if (pos[0]+ 1, pos[1]) in capsule_pos: capsule_proximity += 10
   if Directions.WEST in actions:
       if food[pos[0]- 1][pos[1]]: food_proximity += 10
+      if (pos[0]- 1, pos[1]) in capsule_pos: capsule_proximity += 10
+
 
 
   min_ghost_dist = min([manhattanDistance(ghost_pos[x], pos) for x in xrange(len(ghost_pos))])
@@ -314,8 +320,8 @@ def betterEvaluationFunction(currentGameState):
   #print food_proximity
  # print "Min scare time " + str(min_scare_time)
  # print "min_ghost_dist exp " + str(-math.exp(-(min_ghost_dist-5)))
-  print food_proximity + -math.exp(-(min_ghost_dist-2)) - 1.5*min_food
-  return   food_proximity + -math.exp(-(min_ghost_dist-2)) - 1.5*min_food
+  print food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
+  return   food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
 
 
 
