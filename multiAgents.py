@@ -143,7 +143,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         actions_list.append((action_val, a))
         take_action = max(actions_list)
     #print(gameState.getNumAgents())
-    print(take_action[0])
+    #print(take_action[0])
     return take_action[1]
 
   def min_value(self, gameState, ply, agent):
