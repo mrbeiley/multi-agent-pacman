@@ -143,7 +143,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         actions_list.append((action_val, a))
         take_action = max(actions_list)
     #print(gameState.getNumAgents())
-    #print(take_action[0])
+    print(take_action[0])
     return take_action[1]
 
   def min_value(self, gameState, ply, agent):
@@ -191,8 +191,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         best_action = take_action[1]
 
     #print(gameState.getNumAgents())
-    #print(take_action[1])
     print(take_action[0])
+
     return best_action
     #return self.max_value_ab(gameState.generateSuccessor(0, a), 0, 1, -10000000,10000000)
 
@@ -229,9 +229,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
           alpha = max(alpha, v)
       return v
-
-
-
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
   """
