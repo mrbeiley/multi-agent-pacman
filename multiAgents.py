@@ -231,19 +231,46 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
       return v
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
-  """
-    Your expectimax agent (question 4)
-  """
-
-  def getAction(self, gameState):
     """
-      Returns the expectimax action using self.depth and self.evaluationFunction
-
-      All ghosts should be modeled as choosing uniformly at random from their
-      legal moves.
+Your expectimax agent (question 4)
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    def getAction(self, gameState):
+        """
+    Returns the expectimax action using self.depth and self.evaluationFunction
+
+    All ghosts should be modeled as choosing uniformly at random from their
+    legal moves.
+        """
+        actions_list = []
+        for a in gameState.getLegalActions(0):
+            action_val, ply = self.chance_val(gameState.generateSuccessor(0, a), 0, 1)
+            actions_list.append((action_val, a))
+            take_action = max(actions_list)
+
+        return take_action[1]
+
+    def max_value(self, gameState, ply, agent):
+        if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return self.evaluationFunction(gameState), ply
+        util_val = -1000000000000000000000
+        for a in gameState.getLegalActions(agent):
+            test_action, new_ply = self.chance_val(gameState.generateSuccessor(agent, a), ply +1, agent +1 )
+            util_val = max(util_val, test_action)
+
+        return (util_val, new_ply)
+
+    def chance_val(self, gameState, ply, agent):
+        if gameState.isWin() or gameState.isLose() or ply == self.depth*gameState.getNumAgents()-1: return self.evaluationFunction(gameState), ply
+        p_move = 1/len(gameState.getLegalActions(agent))
+        v = 0
+        for a in gameState.getLegalActions(agent):
+            if agent < gameState.getNumAgents()-1:
+                test_action, new_ply = self.chance_val(gameState.generateSuccessor(agent,a), ply +1, agent+1)
+                v += p_move * test_action
+            else:
+                test_action, new_ply = self.max_value(gameState.generateSuccessor(agent,a), ply +1, 0)
+                v += p_move * test_action
+
+        return (v, new_ply)
 
 def betterEvaluationFunction(currentGameState):
   """
@@ -252,8 +279,28 @@ def betterEvaluationFunction(currentGameState):
 
     DESCRIPTION: <write something here so we know what you did>
   """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+
+  pos = currentGameState.getPacmanPosition()
+  oldFood = currentGameState.getFood()
+  newGhostStates = currentGameState.getGhostStates()
+  newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+  ghost_pos = [ghostState.getPosition() for ghostState in newGhostStates]
+  food_dist = []
+
+  for i in oldFood.asList():
+      food_dist.append(manhattanDistance(pos, i))
+      min_food = min(food_dist)
+
+
+  return_val = 0
+  min_ghost_dist = min([manhattanDistance(ghost_pos[x], pos) for x in xrange(len(ghost_pos))])
+  if min_ghost_dist  < 3 : return_val += -400
+
+  if min_food < min_ghost_dist: return_val += 100
+  if oldFood[pos+1][pos] ==True or oldFood[pos-1][pos] ==True or oldFood[pos-1][pos]==True  or oldFood[pos][pos-1] ==True: return_val +=300
+  return  return_val
+
 
 # Abbreviation
 better = betterEvaluationFunction
