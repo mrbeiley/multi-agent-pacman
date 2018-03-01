@@ -243,6 +243,7 @@ Your expectimax agent (question 4)
         """
         actions_list = []
         for a in gameState.getLegalActions(0):
+            if a == Directions.STOP: continue
             action_val, ply = self.chance_val(gameState.generateSuccessor(0, a), 0, 1)
             actions_list.append((action_val, a))
             take_action = max(actions_list)
@@ -326,13 +327,23 @@ def betterEvaluationFunction(currentGameState):
       c_dist.append(manhattanDistance(pos, c_pos))
 
 
-  if min(c_dist)<5: return_val += 1./ min(c_dist)
+  if c_dist: return_val += 10*1./ min(c_dist)
+  if c_dist: return_val += 1./len(c_dist)
   if min_ghost_dist <= 1:
-      return_val -= 20
+      #return_val -= 20
       print "on"
+  if newScaredTimes[0]>0:
 
-  return_val += 10*(1./len(food_list))
-  return_val += 1./min_food
+        if min_ghost_dist != 0 and min_ghost_dist <2:
+            return_val -= 10* 1./min_ghost_dist
+        else:
+            return_val -= 0
+  return_val += (1./len(food_list))
+  #return_val += 1./min_food
+
+
+  return_val += 10.* 1./min_food
+  return_val += food_proximity
   #return_val += currentGameState.getScore()
   #better state has higher eval function
   #print food_proximity + capsule_proximity - math.exp(-(min_ghost_dist-3)) - min_food
@@ -342,10 +353,10 @@ def betterEvaluationFunction(currentGameState):
 
 """
 things that are important:
--want less food on the board
--want to be closer to food
--want to be closer to capsules
--want to be far from ghosts
+-want less food on the board ----->1/len food increases as num food decreases
+-want to be closer to food -------> 1/min_food increases as min_food gets smaller
+-want to be closer to capsules ------> 1/c_dist inc as ghost gets closer to capsule
+-want to be far from ghosts -----> 1/ghost dist inc as ghosts get close
 
 1/
 """

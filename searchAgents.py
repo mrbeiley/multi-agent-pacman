@@ -638,7 +638,7 @@ def mazeDistance(point1, point2, gameState):
   x1, y1 = point1
   x2, y2 = point2
   walls = gameState.getWalls()
-  assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
-  assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
+  #assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
+  #assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
   prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False)
   return len(search.bfs(prob))
